@@ -41,6 +41,11 @@
       - libtiff-devel
       - tcl-devel
       - tk-devel
+
+      # for LDAP
+      - python-devel
+      - openldap-devel
+
     become: yes
     become_user: root
 

@@ -34,6 +34,12 @@
       - libwebp-dev
       - python-tk
 
+      # for LDAP
+      - libsasl2-dev
+      - python-dev
+      - libldap2-dev
+      - libssl-dev
+
     become: yes
     become_user: root
 
