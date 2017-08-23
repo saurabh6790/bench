@@ -7,6 +7,7 @@ import git
 import requests
 import getpass
 import re
+import subprocess
 from requests.auth import HTTPBasicAuth
 import requests.exceptions
 from time import sleep
@@ -57,6 +58,7 @@ def bump(bench_path, app, bump_type, from_branch, to_branch, remote, owner, repo
 	assert bump_type in ['minor', 'major', 'patch', 'stable', 'prerelease']
 
 	repo_path = os.path.join(bench_path, 'apps', app)
+	validate_branches_to_update(repo_path, from_branch, remote)
 	update_branches_and_check_for_changelog(repo_path, from_branch, to_branch, remote=remote)
 	message = get_release_message(repo_path, from_branch=from_branch, to_branch=to_branch, remote=remote)
 
@@ -76,6 +78,23 @@ def bump(bench_path, app, bump_type, from_branch, to_branch, remote, owner, repo
 	push_release(repo_path, from_branch=from_branch, to_branch=to_branch, remote=remote)
 	create_github_release(repo_path, tag_name, message, remote=remote, owner=owner, repo_name=repo_name)
 	print('Released {tag} for {repo_path}'.format(tag=tag_name, repo_path=repo_path))
+
+def validate_branches_to_update(repo_path, from_branch, remote='upstream'):
+	invalid_branches = []
+
+	for branch in branches_to_update[from_branch]:
+		cmd = "git branch -r | egrep 'upstream/{branch}'".format(branch=branch)
+		subprocess.check_output(['git', 'fetch'], cwd=repo_path)
+		ps = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, 
+			stderr=subprocess.STDOUT, cwd=repo_path)
+		output = ps.communicate()[0]
+		if output == '':
+			invalid_branches.append(branch)
+
+	remove_invalid_branches(invalid_branches, from_branch)
+
+def remove_invalid_branches(invalid_branches, from_branch):
+	branches_to_update[from_branch] = list(set(branches_to_update[from_branch]) - set(invalid_branches))
 
 def update_branches_and_check_for_changelog(repo_path, from_branch='develop', to_branch='master', remote='upstream'):
 
