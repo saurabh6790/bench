@@ -1,4 +1,4 @@
 sudo apt-get install -y software-properties-common
-sudo apt-add-repository -y ppa:ansible/ansible
+sudo apt-get install -y libffi-dev libssl-dev python-pip gcc python-dev
 sudo apt-get update
-sudo apt-get install -y ansible
+sudo -H pip install --upgrade setuptools ansible==2.0.2.0

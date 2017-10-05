@@ -1,15 +1,21 @@
 #! /bin/bash
 
 message="
- ERPNext evaluation VM (built on `date +\"%B %d, %Y\"`)
+ ERPNext VM (built on `date +\"%B %d, %Y\"`)
 
  Please access ERPNext by going to http://localhost:8080 on the host system.
+ Use port 3022 for SSH.
 
- Do consider donating at https://frappe.io/buy
+ We provide rock solid hosting for ERPNext : erpnext.com/pricing
 
  To update, login as
  username: frappe
  password: frappe
+ 
+ ERPNext Administrator Login:
+ username: Administrator
+ password: admin
+ 
  cd frappe-bench
  bench update
 "
