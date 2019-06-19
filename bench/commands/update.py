@@ -69,10 +69,10 @@ def _update(pull=False, patch=False, build=False, update_bench=False, auto=False
 
 	before_update(bench_path=bench_path, requirements=requirements)
 
-	conf.update({ "maintenance_mode": 1, "pause_scheduler": 1 })
-	update_config(conf, bench_path=bench_path)
-
 	if not no_backup:
+		conf.update({ "maintenance_mode": 1, "pause_scheduler": 1 })
+		update_config(conf, bench_path=bench_path)
+
 		print('Backing up sites...')
 		backup_all_sites(bench_path=bench_path)
 
@@ -98,12 +98,16 @@ def _update(pull=False, patch=False, build=False, update_bench=False, auto=False
 	if patch:
 		print('Patching sites...')
 		patch_sites(bench_path=bench_path)
+
 	if build:
 		build_assets(bench_path=bench_path)
+
 	if version_upgrade[0] or (not version_upgrade[0] and force):
 		post_upgrade(version_upgrade[1], version_upgrade[2], bench_path=bench_path)
+
 	if restart_supervisor or conf.get('restart_supervisor_on_update'):
 		restart_supervisor_processes(bench_path=bench_path)
+
 	if restart_systemd or conf.get('restart_systemd_on_update'):
 		restart_systemd_processes(bench_path=bench_path)
 
